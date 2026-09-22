@@ -1,39 +1,29 @@
-// file: api/process-video.js (Deploy lên Vercel)
+// file: api/process-video.js
 const { YoutubeTranscript } = require('youtube-transcript');
 
-module.exports = async function handler(req, res) {
-  // Bật CORS cho phép GitHub Pages gọi vào
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*'); 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Xử lý các yêu cầu Preflight OPTIONS từ trình duyệt
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
   
-  const videoId = req.query.id; // Lấy ID video từ URL
-
+  const videoId = req.query.id; 
   if (!videoId) {
-    return res.status(400).json({ error: 'Thiếu tham số id của video' });
+    return res.status(400).json({ error: 'Thiếu ID video' });
   }
   
   try {
-    // Kéo phụ đề từ YouTube không lo CORS
-    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+    // Ép lấy phụ đề tiếng Anh (ưu tiên CC, nếu không có thì lấy auto)
+    const transcript = await YoutubeTranscript.fetchTranscript(videoId, { lang: 'en' });
     
-    // Tạo cấu trúc data trả về theo yêu cầu của bạn:
     const processedData = transcript.map(item => ({
-      text: item.text,
-      offset: item.offset,     // Thời gian bắt đầu (miligiây)
-      duration: item.duration, // Thời lượng câu
-      vi_translation: "Bản dịch tiếng Việt sẽ nằm ở đây...", // Chờ gọi API dịch
-      ipa: "/ipa/ sẽ nằm ở đây/" // Chờ hàm tạo IPA
+      text: item.text.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"'), // Dọn dẹp mấy ký tự html lỗi
+      offset: item.offset,     
+      duration: item.duration, 
+      vi_translation: "Bản dịch tiếng Việt đang cập nhật...", 
+      ipa: "" 
     }));
 
-    // Trả cục data về cho frontend
     res.status(200).json(processedData);
   } catch (error) {
-    res.status(500).json({ error: 'Không lấy được phụ đề' });
+    // Nếu vẫn lỗi thì báo ra
+    res.status(500).json({ error: 'Không lấy được phụ đề', details: error.message });
   }
 }
