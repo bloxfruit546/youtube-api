@@ -76,7 +76,13 @@ check(found == spec, f"gradient hexes drifted: {found}")
 heights = {m for m in re.findall(r"kPS16PanelHeight\s*=\s*([\d.]+)", tweak + panel)}
 check(heights == {"284.0"}, f"kPS16PanelHeight disagrees: {heights}")
 
-# --- 6. Logos balance -------------------------------------------------------
+# --- 6. No unused static constants (a -Wall build error, not a warning) -----
+for path, text in sources.items():
+    for name in set(re.findall(r"(?m)^static const \w+ (\w+)", text)):
+        check(len(re.findall(rf"\b{name}\b", text)) > 1,
+              f"{path.name}: unused static const {name} (breaks the -Wall build)")
+
+# --- 7. Logos balance -------------------------------------------------------
 check(tweak.count("%hook") == tweak.count("%end") - 3,
       "unbalanced %hook/%end in Tweak.x")
 check(tweak.count("%group") == 3, f"expected 3 %groups, got {tweak.count('%group')}")

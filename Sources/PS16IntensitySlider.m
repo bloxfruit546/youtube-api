@@ -11,7 +11,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-static const CGFloat kPS16SliderHeight = 20.0;
 static const CGFloat kPS16SliderCornerRadius = 10.0;
 static const CGFloat kPS16ThumbSize = 16.0;
 

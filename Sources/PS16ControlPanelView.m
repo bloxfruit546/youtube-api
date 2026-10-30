@@ -20,7 +20,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <math.h>
 
-static const CGFloat kPS16PanelHeight = 284.0;
+// Height lives in Tweak.x (the panel is framed from the host view there);
+// repeating it here would be a second copy with no reader.
 static const CGFloat kPS16HUDRowHeight = 28.0;
 static const CGFloat kPS16RailCellSize = 28.0;
 static const CGFloat kPS16RailSpacing = 8.0;
@@ -543,7 +544,7 @@ typedef NS_ENUM(NSInteger, PS16Glyph) {
 
     CGFloat sliderTop = contentTop + contentHeight + 8.0;
     self.sliderView.frame = CGRectMake(self.padView.frame.origin.x,
-                                       sliderTop + (kPS16SliderHeight - kPS16SliderHeight) * 0.5,
+                                       sliderTop,
                                        kPS16SliderWidth,
                                        kPS16SliderHeight);
 
