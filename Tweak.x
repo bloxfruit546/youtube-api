@@ -80,6 +80,9 @@ static void PS16SetValue(id object, NSString *key, id value)
     BOOL _outputAttached;
     BOOL _active;
     CGSize _targetSize;
+    // AVCaptureOutput exposes no -session (it is private), so remember which one
+    // we hooked. Weak: the session is owned by the Camera app.
+    __weak AVCaptureSession *_attachedSession;
 }
 
 @property (nonatomic, strong) CIContext *context;
@@ -186,11 +189,12 @@ static AVCaptureVideoPreviewLayer *PS16FindPreviewLayer(CALayer *root, NSInteger
 
     // A new session (camera switch, mode change) means the old output went with
     // it; re-attach against the new one.
-    if (_outputAttached && self.output.session == session) {
+    if (_outputAttached && _attachedSession == session) {
         return;
     }
 
     _outputAttached = NO;
+    _attachedSession = session;
     [self ps16_attachOutputToSession:session];
 }
 
