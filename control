@@ -1,0 +1,9 @@
+Package: com.ps16.photographicstyles16
+Name: PhotographicStyles16
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: iPhone 16 Photographic Styles inside the stock Camera app on iPhone 5s (iOS 12.5.8). Five presets (Standard, Pearl, Rose Gold, Contrast, Amber), an 11x11 dot-matrix tone/colour pad, a live GPU viewfinder preview and full-resolution capture baking with a single shared Metal-backed CIContext.
+Maintainer: PS16 Developer <dev@ps16.local>
+Author: PS16 Developer <dev@ps16.local>
+Section: Tweaks
+Depends: firmware (>= 12.0), mobilesubstrate
